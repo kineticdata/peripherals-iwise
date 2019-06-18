@@ -1,0 +1,20 @@
+<taskInfo version="1.0">
+    <info name="authentication_username"
+        description="The iWise User_ID used to log into the iWise XML server."/>
+    <info name="authentication_password"
+        description="The iWise Password used to log into the iWise XML server."/>
+    <info name="authentication_transaction_server"
+        description="The iWise Transaction_Server used to log into the iWise XML server."/>
+    <info name="authentication_server_port"
+        description="The iWise Server_Port used to log into the iWise XML server."/>
+    <info name="authentication_account"
+        description="The iWise Account used to log into the iWise XML server."/>
+    <info name="authentication_session"
+        description="The iWise iWise_Session used to log into the iWise XML server."/>
+    <info name="authentication_group"
+        description="The iWise Group used to log into the iWise XML server."/>
+    <info name="endpoint_address" 
+        description="The DNS name or IP address for the iWise XML server."/>
+    <info name="endpoint_port" 
+        description="The port number for the iWise XML server."/>
+</taskInfo>

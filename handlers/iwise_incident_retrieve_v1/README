@@ -1,0 +1,42 @@
+== IWise_Incident_Retrieve
+Retrieves pertinent information about the desired iWise Incident record using
+the iWise XML Server specified by the associated task definition info items.
+
+For more information about infraWise or the iWise application suite see the 
+"About iWise" section below
+
+For more information, see the "Detailed Description" section below.
+
+=== Parameters
+[Incident ID]
+  The ID of the iWise incident record that should be retrieved.
+
+==== Sample Configuration
+Requester Email::     <%=@results['Create iWise Incident']['Incident ID']%>
+
+=== Results
+[Incident Id]
+  The internal iWise object id for this incident record.
+[Assignee Group]
+  The name of the group that is assigned this incident record.
+[Assignee Name]
+  The name of the user that is assigned this incident record.
+[Status]
+  The present status of this incident record.
+
+=== About iWise
+iWise software helps you manage your IT infrastructure with a no-nonsense, 
+life-cycle approach that maps the processes in place in your organization.  The
+scalable, multi-platform architecture of iWise makes it a solid, long-term
+strategic investment for medium, large, and growing companies and government
+agencies.
+
+For more information, see http://www.infrawise.com/en/index.
+
+=== Detailed Description
+This handler utilizes the iWise XML Server SOAP framework to submit a 
+getObject request with the following configuration:
+
+Attributes:
+* objectType           => "Incident"
+* objectID             => The value of the "Incident ID" parameter.

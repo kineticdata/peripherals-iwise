@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="iwise_incident_retrieves" name="Retrieve Incident" schema_version="1.0" version="1">
+    <author>Kinetic Data Inc. - support@kineticdata.com</author>
+    <description>
+        Retrieves information about an incident from the iWise XML Server
+        specified configured by the associated task definition info items.
+    </description>
+    <helpurl/>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter label="Incident ID"  id="incident_id"  required="true"
+          tooltip="The iWise Object_ID of the incident that should be retrieved."/>
+    </parameters>
+    <handler name="iwise_webservice" version="1">
+        <!--
+        The configuration element is used to specify the information required to
+        connect to an iWise XML Sever.  This include the server endpoint
+        configuration and the user authentication configuration.  These values
+        are specified in Kinetic Task Info records.
+        -->
+        <configuration>
+            <endpoint>
+                <item name="address">&lt;%= @info['endpoint_address'] %&gt;</item>
+                <item name="port">&lt;%= @info['endpoint_port'] %&gt;</item>
+            </endpoint>
+            <authentication>
+                <item name="User_ID">&lt;%= @info['authentication_username'] %&gt;</item>
+                <item name="Password">&lt;%= @info['authentication_password'] %&gt;</item>
+                <item name="Transaction_Server">&lt;%= @info['authentication_transaction_server'] %&gt;</item>
+                <item name="Server_Port">&lt;%= @info['authentication_server_port'] %&gt;</item>
+                <item name="Account">&lt;%= @info['authentication_account'] %&gt;</item>
+                <item name="iWise_Session">&lt;%= @info['authentication_session'] %&gt;</item>
+                <item name="Group">&lt;%= @info['authentication_group'] %&gt;</item>
+            </authentication>
+        </configuration>
+        <!--
+        The data element is used to build up the data that defines the request
+        that should be made to the iWise XML Server.  It includes the method
+        name, iWiseRequest attributes, and iWiseRequest/Substitution data.
+        -->
+        <data>
+            <!--
+            The method element is used to specify the name of the iWise XML
+            Server web method that is being called.
+            -->
+            <method>getObject</method>
+            <!--
+            The attributes include a list of iWiseRequest element attributes
+            that should be included as part of the request.  The 'userID' and
+            'sessionID' attributes are automatically added based upon the
+            authentication configuration for the handler.
+            -->
+            <attributes>
+                <attribute name="objectType">Incident</attribute>
+                <attribute name="objectID">&lt;%= @parameters['incident_id'] %&gt;</attribute>
+            </attributes>
+            <!--
+            The substitutions include a list of iWiseRequest/Substitution
+            element key/value pairs that should be included as part of the
+            request.
+            -->
+            <substitutions/>
+        </data>
+        <!--
+        The result_maps element is used to define a mapping of Kinetic Task
+        Engine result names to iWise XML Server result envelope element values.
+        It should contain a result_map child element for each of the
+        /taskDefinition/results/result elements that are defined.  The
+        result_map element should have a 'name' attribute equal to the 'name'
+        attribute of the result element and a value equal to the XPath query
+        that can be used to retrieve the desired value from the iWise XML Server
+        result envelope.  The XPath query should be relative to the IWiseStatus
+        element (For example: 'result' or 'iWiseObject/type').
+        -->
+        <result_maps>
+            <result_map name="assignee_group">IWiseObject/dataElements/IWiseObjectDataAttribute[name[text()='Assignee_Group']]/value/text()</result_map>
+            <result_map name="assignee_name">IWiseObject/dataElements/IWiseObjectDataAttribute[name[text()='Assignee_Name']]/value/text()</result_map>
+            <result_map name="object_id">IWiseObject/dataElements/IWiseObjectDataAttribute[name[text()='Object_ID']]/value/text()</result_map>
+            <result_map name="status">IWiseObject/dataElements/IWiseObjectDataAttribute[name[text()='Incident_Status']]/value/text()</result_map>
+        </result_maps>
+    </handler>
+    <results format="xml">
+        <result name="assignee_group"/>
+        <result name="assignee_name"/>
+        <result name="object_id"/>
+        <result name="status"/>
+    </results>
+</taskDefinition>

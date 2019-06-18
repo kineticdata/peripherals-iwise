@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="iwise_incident_create" name="Create Incident" schema_version="1.0" version="1">
+    <author>Kinetic Data Inc. - support@kineticdata.com</author>
+    <description>
+        Creates a Kinetic Incident using the iWise XML Server configured by the
+        associated task definition info items.
+    </description>
+    <helpurl/>
+    <visible>false</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter label="Requester Email" id="email_address"  required="true"
+          tooltip="The email address of the requester."/>
+        <parameter label="Short Description" id="short_description"  required="true"
+          tooltip="A short description of the incident."/>
+        <parameter label="Description" id="description"  required="true"
+          tooltip="A full description indicating the reason for opening a new incident."/>
+        <parameter label="Symptom Type" id="symptom_type"  required="true"
+          tooltip="The type of symptom the iWise Help Desk incident will be created with."/>
+        <parameter label="Sub Type" id="sub_type"  required="true"
+          tooltip="The subtype of symptom the iWise Help Desk incident will be created with."/>
+    </parameters>
+    <handler name="iwise_webservice" version="1">
+        <!--
+        The configuration element is used to specify the information required to
+        connect to an iWise XML Sever.  This include the server endpoint
+        configuration and the user authentication configuration.  These values
+        are specified in Kinetic Task Info records.
+        -->
+        <configuration>
+            <endpoint>
+                <item name="address">&lt;%= @info['endpoint_address'] %&gt;</item>
+                <item name="port">&lt;%= @info['endpoint_port'] %&gt;</item>
+            </endpoint>
+            <authentication>
+                <item name="User_ID">&lt;%= @info['authentication_username'] %&gt;</item>
+                <item name="Password">&lt;%= @info['authentication_password'] %&gt;</item>
+                <item name="Transaction_Server">&lt;%= @info['authentication_transaction_server'] %&gt;</item>
+                <item name="Server_Port">&lt;%= @info['authentication_server_port'] %&gt;</item>
+                <item name="Account">&lt;%= @info['authentication_account'] %&gt;</item>
+                <item name="iWise_Session">&lt;%= @info['authentication_session'] %&gt;</item>
+                <item name="Group">&lt;%= @info['authentication_group'] %&gt;</item>
+            </authentication>
+        </configuration>
+        <!--
+        The data element is used to build up the data that defines the request
+        that should be made to the iWise XML Server.  It includes the method
+        name, iWiseRequest attributes, and iWiseRequest/Substitution data.
+        -->
+        <data>
+            <!--
+            The method element is used to specify the name of the iWise XML
+            Server web method that is being called.
+            -->
+            <method>createObject</method>
+            <!--
+            The attributes include a list of iWiseRequest element attributes
+            that should be included as part of the request.  The 'userID' and
+            'sessionID' attributes are automatically added based upon the
+            authentication configuration for the handler.
+            -->
+            <attributes>
+                <attribute name="objectType">Incident</attribute>
+                <attribute name="templateName">incident.create.kinetic.template</attribute>
+            </attributes>
+            <!--
+            The substitutions include a list of iWiseRequest/Substitution
+            element key/value pairs that should be included as part of the
+            request.
+            -->
+            <substitutions>
+                <substitution name="SRL_Description_Line">Incident entered from Kinetic</substitution>
+                <substitution name="Comments_Line">&lt;%= @parameters['short_description'] %&gt;</substitution>
+                <substitution name="Comments_Text">&lt;%= @parameters['description'] %&gt;</substitution>
+                <substitution name="Symptom_Type">&lt;%= @parameters['symptom_type'] %&gt;</substitution>
+                <substitution name="Sub_Type">&lt;%= @parameters['sub_type'] %&gt;</substitution>
+                <substitution name="Email_Address">&lt;%= @parameters['email_address'] %&gt;</substitution>
+                <substitution name="External_Xref">&lt;%= @task['Deferral Token'] %&gt;</substitution>
+            </substitutions>
+        </data>
+        <!--
+        The result_maps element is used to define a mapping of Kinetic Task
+        Engine result names to iWise XML Server result envelope element values.
+        It should contain a result_map child element for each of the
+        /taskDefinition/results/result elements that are defined.  The
+        result_map element should have a 'name' attribute equal to the 'name'
+        attribute of the result element and a value equal to the XPath query
+        that can be used to retrieve the desired value from the iWise XML Server
+        result envelope.  The XPath query should be relative to the IWiseStatus
+        element (For example: 'result/text()' or 'iWiseObject/type/text()').
+        -->
+        <result_maps>
+            <result_map name="Incident Id">result/text()</result_map>
+        </result_maps>
+    </handler>
+    <results format="xml">
+        <result name="result"/>
+    </results>
+</taskDefinition>
